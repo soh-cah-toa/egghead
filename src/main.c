@@ -1,3 +1,5 @@
+#include "egghead.h"
+
 int
 main(int argc, char *argv[])
 {
