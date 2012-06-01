@@ -17,7 +17,9 @@
 #ifndef _EGGHEAD_H_
 #define _EGGHEAD_H_
 
-void egghead_eval_char(char *);
+#include <stdint.h>
+
+void egghead_eval_char(int8_t *);
 void egghead_eval_file(char *);
 
 #endif /* _EGGHEAD_H_ */
