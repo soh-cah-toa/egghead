@@ -17,4 +17,8 @@
 #ifndef _EGGHEAD_H_
 #define _EGGHEAD_H_
 
+void egghead_eval_char(char *);
+void egghead_eval_file(char *);
+
 #endif /* _EGGHEAD_H_ */
+

@@ -15,3 +15,14 @@
  */
 
 #include "egghead.h"
+
+void
+egghead_eval_char(char *)
+{
+}
+
+void
+egghead_eval_file(char *)
+{
+}
+
