@@ -16,9 +16,21 @@
 
 #include "egghead.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 int
 main(int argc, char *argv[])
 {
+    /* Begin compilation if file was given. Otherwise, exit program. */
+    if (argc < 2) {
+        fprintf(stderr, "[ERROR] No input file given.\n");
+        exit(EXIT_FAILURE);
+    }
+    else {
+        egghead_eval_file(argv[1]);
+    }
+
     return 0;
 }
 
