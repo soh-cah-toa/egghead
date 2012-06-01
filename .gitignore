@@ -1,2 +1,5 @@
 # Ignore Autoconf script
 /configure.ac
+
+# Ignore temporary build directory
+/bin

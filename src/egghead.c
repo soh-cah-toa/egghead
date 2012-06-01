@@ -17,12 +17,12 @@
 #include "egghead.h"
 
 void
-egghead_eval_char(char *)
+egghead_eval_char(char *chars)
 {
 }
 
 void
-egghead_eval_file(char *)
+egghead_eval_file(char *filename)
 {
 }
 
