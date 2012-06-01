@@ -49,7 +49,7 @@ egghead_eval_file(char *file)
 
     /* Fail if file is empty. */
     if (fsize == 0) {
-        fprintf(stderr, "[ERROR] Insufficient memory.\n");
+        fprintf(stderr, "[ERROR] File %s is empty.\n", file);
         exit(EXIT_FAILURE);
     }
 
