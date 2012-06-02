@@ -17,23 +17,97 @@
 #include "egghead.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-#include <stdint.h>
+
+#define NUM_CELLS 30000
 
 void
-egghead_eval_char(int8_t *chars)
+egghead_eval_char(const char * const input)
 {
+    char  ch;
+    char *cells;
+
+    unsigned int index    = 0;
+    unsigned int nest_lvl = 0;
+    unsigned int ptr      = 0;
+
+    cells = (char *) calloc(NUM_CELLS, sizeof (char));
+
+    /* Iterate through file contents, interpreting known characters. */
+    while (index++ < (unsigned int) strlen(input)) {
+        switch (input[index]) {
+        case '>':    /* Increment data pointer. */
+            ptr++;
+            break;
+
+        case '<':    /* Decrement data pointer. */
+            ptr--;
+            break;
+
+        case '+':    /* Increment byte at data pointer. */
+            cells[ptr]++;
+            break;
+
+        case '-':    /* Decrement byte at data pointer. */
+            cells[ptr]--;
+            break;
+
+        case '.':    /* Output byte at data pointer. */
+            putchar(cells[ptr]);
+            break;
+
+        case ',':    /* Input byte and store it in cell at data pointer. */
+            cells[ptr] = (int) getchar();
+            break;
+
+        case '[':    /* Jump past matching ']' if cell at data
+                        pointer is 0. */
+            if (cells[ptr] == 0) {
+                nest_lvl++;
+
+                while (nest_lvl > 0) {
+                    ch = input[++index];
+
+                    if (ch == '[')
+                        nest_lvl++;
+                    else if (ch == ']')
+                        nest_lvl--;
+                }
+            }
+
+            break;
+
+        case ']':    /* Jump back to matching '[' if cell at data
+                        pointer isn't 0. */
+            nest_lvl++;
+
+            while (nest_lvl > 0) {
+                ch = input[--index];
+
+                if (ch == '[')
+                    nest_lvl--;
+                else if (ch == ']')
+                    nest_lvl++;
+            }
+
+            index--;
+            break;
+        }
+    }
+
+    free(cells);
 }
 
 void
-egghead_eval_file(char *file)
+egghead_eval_file(const char * const file)
 {
-    int          ch;
-    unsigned int fsize;
-    int8_t      *input;
-    FILE        *fp;
+    char  ch;
+    char *input;
+    FILE *fp;
 
-    unsigned int i = 0;
+    unsigned int fsize = 0;
+    unsigned int index = 0;
 
     fp = fopen(file, "r");
 
@@ -53,7 +127,7 @@ egghead_eval_file(char *file)
         exit(EXIT_FAILURE);
     }
 
-    input = (int8_t *) malloc(fsize);
+    input = (char *) malloc(fsize);
 
     /* Fail if not enough memory is available. */
     if (input == NULL) {
@@ -63,7 +137,7 @@ egghead_eval_file(char *file)
 
     /* Fill buffer with contents of file. */
     while ((ch = fgetc(fp)) != EOF)
-        input[i++] = (int8_t) ch;
+        input[index++] = (char) ch;
 
     fclose(fp);
 
