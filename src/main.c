@@ -20,6 +20,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+static void license(void);
+static void usage(unsigned int);
+
 int
 main(int argc, char *argv[])
 {
@@ -47,5 +50,34 @@ main(int argc, char *argv[])
     }
 
     return 0;
+}
+
+static void
+license(void)
+{
+    const char * const info =
+        "Copyright (C) 2012, Kevin Polulak <kpolulak@gmail.com>\n"
+        "License GPLv3+: GNU GPL version 3 or later "
+        "<http://gnu.org/licenses/gpl.html>\n"
+        "This is free software: you are free to change and redistribute it.\n"
+        "There is NO WARRANTY, to the extent permitted by law.\n";
+
+    puts(info);
+}
+
+static void
+usage(unsigned int status)
+{
+    const char * const info =
+        "Usage:\n"
+        "   egghead [options] file\n\n"
+        "Options:\n"
+        "   --help       Display help message.\n"
+        "   --license    Display license information.\n\n"
+        "For more information, see the Egghead manpage (man egghead).\n";
+
+    puts(info);
+
+    exit(status);
 }
 
