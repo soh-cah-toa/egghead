@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <getopt.h>
 
 static void license(void);
 static void usage(unsigned int);
@@ -26,14 +27,54 @@ static void usage(unsigned int);
 int
 main(int argc, char *argv[])
 {
-    char *filename = argv[1];
+    int   c;
+    char *filename = "";
 
-    /* Begin compilation if file was given. Otherwise, exit program. */
+    opterr = 0;
+
+    /* Process command-line switches. */
+    while (1) {
+        static struct option long_opts[] = {
+            { "help",    no_argument, 0, 'h' },
+            { "license", no_argument, 0, 'l' },
+            { 0, 0, 0, 0 }
+        };
+
+        int opt_index = 0;
+
+        c = getopt_long(argc, argv, "hl", long_opts, &opt_index);
+
+        /* Detect end of options. */
+        if (c == -1)
+            break;
+
+        switch (c) {
+        case 'l':
+            license();
+            exit(EXIT_SUCCESS);
+            break;
+        case 'h':
+            usage(EXIT_SUCCESS);
+            break;
+        case '?':
+            fprintf(stderr, "%s: unknown option '%c'.\n", argv[0], optopt);
+            /* Fall through is intentional. */
+        default:
+            usage(EXIT_FAILURE);
+        }
+    }
+
+    /* Begin interpreter if file was given. Otherwise, exit program. */
     if (argc < 2) {
         fprintf(stderr, "[ERROR] No input file given.\n");
         exit(EXIT_FAILURE);
     }
     else {
+        /* Get filename as last remaining argument. */
+        if (optind < argc) {
+            filename = argv[optind];
+        }
+
         /* Proceed only if a valid .bf or .b file was given. */
         if ((strcmp(strrchr(filename, '.'), ".bf") == 0)
             || strcmp(strrchr(filename, '.'), ".b") == 0) {
@@ -60,7 +101,7 @@ license(void)
         "License GPLv3+: GNU GPL version 3 or later "
         "<http://gnu.org/licenses/gpl.html>\n"
         "This is free software: you are free to change and redistribute it.\n"
-        "There is NO WARRANTY, to the extent permitted by law.\n";
+        "There is NO WARRANTY, to the extent permitted by law.";
 
     puts(info);
 }
@@ -76,7 +117,11 @@ usage(unsigned int status)
         "   --license    Display license information.\n\n"
         "For more information, see the Egghead manpage (man egghead).\n";
 
-    puts(info);
+    /* Dispaly message to stdout if success. Otherwise, output to stderr. */
+    if (status == EXIT_SUCCESS)
+        puts(info);
+    else
+        fprintf(stderr, "%s", info);
 
     exit(status);
 }
