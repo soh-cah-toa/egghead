@@ -53,12 +53,15 @@ main(int argc, char *argv[])
             license();
             exit(EXIT_SUCCESS);
             break;
+
         case 'h':
             usage(EXIT_SUCCESS);
             break;
+
         case '?':
             fprintf(stderr, "%s: unknown option '%c'.\n", argv[0], optopt);
             /* Fall through is intentional. */
+
         default:
             usage(EXIT_FAILURE);
         }

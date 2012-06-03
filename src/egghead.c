@@ -35,7 +35,7 @@ egghead_eval_char(const char * const input)
     cells = (char *) calloc(NUM_CELLS, sizeof (char));
 
     /* Iterate through file contents, interpreting known characters. */
-    while (index++ < (unsigned int) strlen(input)) {
+    while (index < (unsigned int) strlen(input)) {
         switch (input[index]) {
         case '>':    /* Increment data pointer. */
             ptr++;
@@ -94,6 +94,8 @@ egghead_eval_char(const char * const input)
             index--;
             break;
         }
+
+        index++;
     }
 
     free(cells);
