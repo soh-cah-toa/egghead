@@ -146,15 +146,13 @@ egghead_eval_file(const char * const file)
 void *
 xcalloc(size_t nmemb, size_t size)
 {
-    void *new = malloc(size);
+    void *new = calloc(nmemb, size);
 
     /* Fail if not enough memory is available. */
     if ((nmemb == 0) || (size == 0) || new == NULL) {
         fprintf(stderr, "[ERROR] Insufficient memory.\n");
         exit(EXIT_FAILURE);
     }
-
-    memset(new, 0, size);
 
     return new;
 }
