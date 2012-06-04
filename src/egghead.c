@@ -32,7 +32,7 @@ egghead_eval_char(const char * const input)
     unsigned int nest_lvl = 0;
     unsigned int ptr      = 0;
 
-    cells = (char *) calloc(NUM_CELLS, sizeof (char));
+    cells = (char *) xcalloc(NUM_CELLS, sizeof (char));
 
     /* Iterate through file contents, interpreting known characters. */
     while (index < (unsigned int) strlen(input)) {
@@ -129,13 +129,7 @@ egghead_eval_file(const char * const file)
         exit(EXIT_FAILURE);
     }
 
-    input = (char *) malloc(fsize);
-
-    /* Fail if not enough memory is available. */
-    if (input == NULL) {
-        fprintf(stderr, "[ERROR] Insufficient memory.\n");
-        exit(EXIT_FAILURE);
-    }
+    input = (char *) xmalloc(fsize);
 
     /* Fill buffer with contents of file. */
     while ((ch = fgetc(fp)) != EOF)
@@ -147,5 +141,35 @@ egghead_eval_file(const char * const file)
     egghead_eval_char(input);
 
     free(input);
+}
+
+void *
+xcalloc(size_t nmemb, size_t size)
+{
+    void *new = malloc(size);
+
+    /* Fail if not enough memory is available. */
+    if ((nmemb == 0) || (size == 0) || new == NULL) {
+        fprintf(stderr, "[ERROR] Insufficient memory.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    memset(new, 0, size);
+
+    return new;
+}
+
+void *
+xmalloc(size_t size)
+{
+    void *new = malloc(size);
+
+    /* Fail if not enough memory is available. */
+    if ((size == 0) || (new == NULL)) {
+        fprintf(stderr, "[ERROR] Insufficient memory.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return new;
 }
 

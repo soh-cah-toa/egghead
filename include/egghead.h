@@ -17,8 +17,13 @@
 #ifndef _EGGHEAD_H_
 #define _EGGHEAD_H_
 
+#include <stdlib.h>
+
 void egghead_eval_char(const char * const);
 void egghead_eval_file(const char * const);
+
+void *xcalloc(size_t, size_t);
+void *xmalloc(size_t);
 
 #endif /* _EGGHEAD_H_ */
 
