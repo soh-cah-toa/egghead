@@ -21,6 +21,9 @@
 #include <stdlib.h>
 #include <getopt.h>
 
+/* Wrapper around strcmp() to make string comparisons more clear. */
+#define STREQ(s1, s2) ((strcmp((s1), (s2)) == 0))
+
 static void license(void);
 static void usage(unsigned int);
 
@@ -79,8 +82,8 @@ main(int argc, char *argv[])
         }
 
         /* Proceed only if a valid .bf or .b file was given. */
-        if ((strcmp(strrchr(filename, '.'), ".bf") == 0)
-            || strcmp(strrchr(filename, '.'), ".b") == 0) {
+        if ((STREQ(strrchr(filename, '.'), ".bf"))
+            || (STREQ(strrchr(filename, '.'), ".b"))) {
 
             egghead_eval_file(filename);
         }
