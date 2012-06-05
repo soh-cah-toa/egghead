@@ -64,7 +64,7 @@ EOF
 {
     my $expected = <<'EOF';
 Usage: egghead [OPTION]... [FILE]...
-A GNU-compliant Brainfuck interpreter.
+A GNU-compliant brainfuck interpreter.
 
    --help       Display help message.
    --license    Display license information.

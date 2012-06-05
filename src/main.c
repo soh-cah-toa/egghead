@@ -119,7 +119,7 @@ usage(unsigned int status)
 {
     const char * const info =
         "Usage: egghead [OPTION]... [FILE]...\n"
-        "A GNU-compliant Brainfuck interpreter.\n\n"
+        "A GNU-compliant brainfuck interpreter.\n\n"
         "   --help       Display help message.\n"
         "   --license    Display license information.\n\n"
         "With no FILE, or when FILE is -, reads standard input.\n\n"
