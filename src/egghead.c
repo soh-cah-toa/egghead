@@ -111,22 +111,29 @@ egghead_eval_file(const char * const file)
     unsigned int fsize = 0;
     unsigned int index = 0;
 
-    fp = fopen(file, "r");
-
-    if (fp == NULL) {
-        fprintf(stderr, "[ERROR] File %s could not be read.\n", file);
-        exit(EXIT_FAILURE);
+    /* Skip file calculations if reading from stdin. */
+    if (STREQ(file, "-")) {
+        fp    = stdin;
+        fsize = 65536;
     }
+    else {
+        fp = fopen(file, "r");
 
-    /* Determine file size. */
-    fseek(fp, 0, SEEK_END);
-    fsize = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+        if (fp == NULL) {
+            fprintf(stderr, "[ERROR] File %s could not be read.\n", file);
+            exit(EXIT_FAILURE);
+        }
 
-    /* Fail if file is empty. */
-    if (fsize == 0) {
-        fprintf(stderr, "[ERROR] File %s is empty.\n", file);
-        exit(EXIT_FAILURE);
+        /* Determine file size. */
+        fseek(fp, 0, SEEK_END);
+        fsize = ftell(fp);
+        fseek(fp, 0, SEEK_SET);
+
+        /* Fail if file is empty. */
+        if (fsize == 0) {
+            fprintf(stderr, "[ERROR] File %s is empty.\n", file);
+            exit(EXIT_FAILURE);
+        }
     }
 
     input = (char *) xmalloc(fsize);
@@ -135,9 +142,9 @@ egghead_eval_file(const char * const file)
     while ((ch = fgetc(fp)) != EOF)
         input[index++] = (char) ch;
 
-    fclose(fp);
+    if (fp != stdin)
+        fclose(fp);
 
-    /* Begin interpretation of file contents. */
     egghead_eval_char(input);
 
     free(input);

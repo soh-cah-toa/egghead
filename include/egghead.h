@@ -18,6 +18,10 @@
 #define _EGGHEAD_H_
 
 #include <stdlib.h>
+#include <string.h>
+
+/* Wrapper around strcmp() to make string comparisons more clear. */
+#define STREQ(s1, s2) ((strcmp((s1), (s2)) == 0))
 
 void egghead_eval_char(const char * const);
 void egghead_eval_file(const char * const);

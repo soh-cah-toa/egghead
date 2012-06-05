@@ -21,9 +21,6 @@
 #include <stdlib.h>
 #include <getopt.h>
 
-/* Wrapper around strcmp() to make string comparisons more clear. */
-#define STREQ(s1, s2) ((strcmp((s1), (s2)) == 0))
-
 static void license(void);
 static void usage(unsigned int);
 
@@ -31,7 +28,8 @@ int
 main(int argc, char *argv[])
 {
     int   c;
-    char *filename = "";
+    int   argind;
+    char *infile = "";
 
     opterr = 0;
 
@@ -70,31 +68,35 @@ main(int argc, char *argv[])
         }
     }
 
-    /* Begin interpreter if file was given. Otherwise, exit program. */
-    if (argc < 2) {
-        fprintf(stderr, "[ERROR] No input file given.\n");
-        exit(EXIT_FAILURE);
-    }
-    else {
-        /* Get filename as last remaining argument. */
+    do {
+        infile = "-";
+        argind   = optind;
+
+        /* Get input source as last remaining argument. */
         if (optind < argc) {
-            filename = argv[optind];
+            infile = argv[optind];
         }
 
-        /* Proceed only if a valid .bf or .b file was given. */
-        if ((STREQ(strrchr(filename, '.'), ".bf"))
-            || (STREQ(strrchr(filename, '.'), ".b"))) {
-
-            egghead_eval_file(filename);
+        /* Determine whether input source is stdin or an actual file. */
+        if ((infile[0] == '-') && (infile[1] == 0)) {
+            egghead_eval_file("-");
         }
         else {
-            fprintf(stderr,
-                    "[ERROR] File %s is not a valid brainfuck file.\n",
-                    filename);
+            /* Proceed only if a valid .bf or .b file was given. */
+            if ((STREQ(strrchr(infile, '.'), ".bf"))
+                || (STREQ(strrchr(infile, '.'), ".b"))) {
 
-            exit(EXIT_FAILURE);
+                egghead_eval_file(infile);
+            }
+            else {
+                fprintf(stderr,
+                        "[ERROR] File %s is not a valid brainfuck file.\n",
+                        infile);
+
+                exit(EXIT_FAILURE);
+            }
         }
-    }
+    } while (++argind < argc);
 
     return 0;
 }
@@ -116,18 +118,18 @@ static void
 usage(unsigned int status)
 {
     const char * const info =
-        "Usage:\n"
-        "   egghead [options] file\n\n"
-        "Options:\n"
+        "Usage: egghead [OPTION]... [FILE]...\n"
+        "A GNU-compliant Brainfuck interpreter.\n\n"
         "   --help       Display help message.\n"
         "   --license    Display license information.\n\n"
-        "For more information, see the Egghead manpage (man egghead).\n";
+        "With no FILE, or when FILE is -, reads standard input.\n\n"
+        "For more information, see the Egghead manpage (man egghead).";
 
     /* Dispaly message to stdout if success. Otherwise, output to stderr. */
     if (status == EXIT_SUCCESS)
         puts(info);
     else
-        fprintf(stderr, "%s", info);
+        fprintf(stderr, "%s\n", info);
 
     exit(status);
 }
