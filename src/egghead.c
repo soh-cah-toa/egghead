@@ -32,7 +32,7 @@ egghead_eval_char(const char * const input)
     unsigned int nest_lvl = 0;
     unsigned int ptr      = 0;
 
-    cells = (char *) xcalloc(NUM_CELLS, sizeof (char));
+    cells = XCALLOC(char, NUM_CELLS);
 
     /* Iterate through file contents, interpreting known characters. */
     while (index < (unsigned int) strlen(input)) {
@@ -98,7 +98,7 @@ egghead_eval_char(const char * const input)
         index++;
     }
 
-    free(cells);
+    XFREE(cells);
 }
 
 void
@@ -136,7 +136,7 @@ egghead_eval_file(const char * const file)
         }
     }
 
-    input = (char *) xmalloc(fsize);
+    input = XMALLOC(char, fsize);
 
     /* Fill buffer with contents of file. */
     while ((ch = fgetc(fp)) != EOF)
@@ -147,7 +147,7 @@ egghead_eval_file(const char * const file)
 
     egghead_eval_char(input);
 
-    free(input);
+    XFREE(input);
 }
 
 void *
