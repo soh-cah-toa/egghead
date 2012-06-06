@@ -66,6 +66,7 @@ EOF
 Usage: egghead [OPTION]... [FILE]...
 A GNU-compliant brainfuck interpreter.
 
+   --strict     Interpreter only recognizes valid brainfuck commands.
    --help       Display help message.
    --license    Display license information.
 

@@ -38,7 +38,7 @@ CC       = gcc
 CC_INC   = -I./include
 CC_O_OUT = -o
 CC_WARN  = -W -Wall
-CFLAGS   = $(CC_INC) -O2 -g -fstack-protector
+CFLAGS   = $(CC_INC) -O2 -g -fstack-protector -std=c99
 
 ##
 # USER TARGETS

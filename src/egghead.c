@@ -18,12 +18,13 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include <stdlib.h>
 
 #define NUM_CELLS 30000
 
 void
-egghead_eval_char(const char * const input)
+egghead_eval_char(eh_opts_t *opts, const char * const input)
 {
     char  ch;
     char *cells;
@@ -93,6 +94,23 @@ egghead_eval_char(const char * const input)
 
             index--;
             break;
+
+        default:
+            ch = input[index];
+
+            /* Whitespace is always allowed regardless of --strict switch. */
+            if (isspace(ch))
+                break;
+
+            /* Fail if invalid characters are found with --strict switch on. */
+            if (opts->eo_strict == true) {
+                fprintf(stderr,
+                        "[ERROR] Character %c is not a valid brainfuck "
+                        "command.\n",
+                        ch);
+
+                exit(EXIT_FAILURE);
+            }
         }
 
         index++;
@@ -102,7 +120,7 @@ egghead_eval_char(const char * const input)
 }
 
 void
-egghead_eval_file(const char * const file)
+egghead_eval_file(eh_opts_t *opts, const char * const file)
 {
     char  ch;
     char *input;
@@ -145,7 +163,7 @@ egghead_eval_file(const char * const file)
     if (fp != stdin)
         fclose(fp);
 
-    egghead_eval_char(input);
+    egghead_eval_char(opts, input);
 
     XFREE(input);
 }

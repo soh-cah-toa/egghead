@@ -25,6 +25,7 @@ use File::Spec;
 
 my $egghead = File::Spec->join('bin', 'egghead');
 
+# Test invalid characters without --strict
 {
     my $expected = "Hello World!";
 
@@ -51,7 +52,39 @@ my $egghead = File::Spec->join('bin', 'egghead');
 
     waitpid $pid, 0;
 
-    is($got, $expected, 'Testing "Hello world" example');
+    is($got, $expected, 'Testing invalid characters without --strict');
+}
+
+# Test invalid characters with --strict
+{
+    my $expected = <<'EOF';
+[ERROR] Character T is not a valid brainfuck command.
+EOF
+
+    my $pid = open3(undef,
+                    undef,
+                    \*EH_STDERR,
+                    "$egghead --strict tests/testlib/hello2.bf");
+
+    my $select = IO::Select->new();
+    $select->add(\*EH_STDERR);
+
+    my $got = '';
+
+    while (my @fh_ready = $select->can_read()) {
+        foreach my $fh (@fh_ready) {
+            next unless defined $fh;
+
+            $got = <$fh>;
+            $select->remove($fh) if eof $fh;
+
+            next unless defined $got;
+        }
+    }
+
+    waitpid $pid, 0;
+
+    is($got, $expected, 'Testing invalid characters with --strict');
 }
 
 done_testing();

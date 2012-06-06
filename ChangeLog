@@ -1,3 +1,25 @@
+2012-06-06 Kevin Polulak <kpolulak@gmail.com>
+	* Makefile: Added -std=c99 to CFLAGS.
+
+	* include/egghead.h: Created new eh_opts_t structure for managing
+	command-line switches that affect interpretation. Also changed
+	egghead_eval_char() and egghead_eval_file() to accept a structure of this
+	type as a parameter.
+
+	* src/egghead.c: In egghead_eval_char(), included 'default' case in main
+	'switch' statement to cause an error when new --strict switch is given.
+
+	* src/main.c: Created new default_options() static function for populating
+	main eh_opts_t structure with the default configuration. Also added code
+	to process new --strict switch. Modified usage() to display information
+	about --strict.
+
+	* tests/bad_chars.t: Added another test case to verify that the new
+	--strict switch works as intended.
+
+	* tests/help.t: Updated $expected string to reflect new changes that
+	display information about the --strict switch.
+
 2012-06-05 Kevin Polulak <kpolulak@gmail.com>
 	* Version 1.0
 		+ Features all eight brainfuck commands.

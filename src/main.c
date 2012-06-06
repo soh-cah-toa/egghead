@@ -18,9 +18,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <getopt.h>
 
+static void default_options(eh_opts_t *);
 static void license(void);
 static void usage(unsigned int);
 
@@ -31,11 +33,16 @@ main(int argc, char *argv[])
     int   argind;
     char *infile = "";
 
+    eh_opts_t *options = XMALLOC(eh_opts_t, sizeof (eh_opts_t));
+
+    default_options(options);
+
     opterr = 0;
 
     /* Process command-line switches. */
     while (1) {
         static struct option long_opts[] = {
+            { "strict",  no_argument, 0, 's' },
             { "help",    no_argument, 0, 'h' },
             { "license", no_argument, 0, 'l' },
             { 0, 0, 0, 0 }
@@ -43,13 +50,17 @@ main(int argc, char *argv[])
 
         int opt_index = 0;
 
-        c = getopt_long(argc, argv, "hl", long_opts, &opt_index);
+        c = getopt_long(argc, argv, "shl", long_opts, &opt_index);
 
         /* Detect end of options. */
         if (c == -1)
             break;
 
         switch (c) {
+        case 's':
+            options->eo_strict = true;
+            break;
+
         case 'l':
             license();
             exit(EXIT_SUCCESS);
@@ -79,14 +90,14 @@ main(int argc, char *argv[])
 
         /* Determine whether input source is stdin or an actual file. */
         if ((infile[0] == '-') && (infile[1] == 0)) {
-            egghead_eval_file("-");
+            egghead_eval_file(options, "-");
         }
         else {
             /* Proceed only if a valid .bf or .b file was given. */
             if ((STREQ(strrchr(infile, '.'), ".bf"))
                 || (STREQ(strrchr(infile, '.'), ".b"))) {
 
-                egghead_eval_file(infile);
+                egghead_eval_file(options, infile);
             }
             else {
                 fprintf(stderr,
@@ -98,7 +109,16 @@ main(int argc, char *argv[])
         }
     } while (++argind < argc);
 
+    XFREE(options);
+
     return 0;
+}
+
+static void
+default_options(eh_opts_t *opts)
+{
+    opts->eo_strict = false;
+    opts->eo_cells  = 30000;
 }
 
 static void
@@ -120,6 +140,7 @@ usage(unsigned int status)
     const char * const info =
         "Usage: egghead [OPTION]... [FILE]...\n"
         "A GNU-compliant brainfuck interpreter.\n\n"
+        "   --strict     Interpreter only recognizes valid brainfuck commands.\n"
         "   --help       Display help message.\n"
         "   --license    Display license information.\n\n"
         "With no FILE, or when FILE is -, reads standard input.\n\n"

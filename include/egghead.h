@@ -19,6 +19,12 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+
+typedef struct eh_opts {
+    bool         eo_strict;
+    unsigned int eo_cells;
+} eh_opts_t;
 
 #define STREQ(s1, s2) ((strcmp((s1), (s2)) == 0))
 
@@ -29,8 +35,8 @@
         if ((stale)) { free((stale)); stale = 0; } \
     } while (0)
 
-void egghead_eval_char(const char * const);
-void egghead_eval_file(const char * const);
+void egghead_eval_char(eh_opts_t *, const char * const);
+void egghead_eval_file(eh_opts_t *, const char * const);
 
 void *xcalloc(size_t, size_t);
 void *xmalloc(size_t);
