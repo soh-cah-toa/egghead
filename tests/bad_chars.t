@@ -26,12 +26,12 @@ use File::Spec;
 my $egghead = File::Spec->join('bin', 'egghead');
 
 {
-    my $expected = "Hello World!\n";
+    my $expected = "Hello World!";
 
     my $pid = open3(undef,
                     \*EH_STDOUT,
                     undef,
-                    "$egghead tests/testlib/hello1.bf");
+                    "$egghead tests/testlib/hello2.bf");
 
     my $select = IO::Select->new();
     $select->add(\*EH_STDOUT);
