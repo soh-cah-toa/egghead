@@ -1,0 +1,6 @@
+2012-06-05 Kevin Polulak <kpolulak@gmail.com>
+	* Version 1.0
+		+ Features all eight brainfuck commands.
+		+ Small but effective test suite.
+		+ No documentation yet.
+		+ Uses hard-coded Makefile.  Future plans for Autoconf as well.

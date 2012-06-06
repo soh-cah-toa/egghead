@@ -1,0 +1,34 @@
+Egghead v1.0
+============
+
+    Egghead is yet another brainfuck interpreter. It is named so due to the
+    fact that it takes a real egghead to even understand the brainfuck
+    language.
+
+    Despite the massive plethora of already existent brainfuck interpreters and
+    compilers, Egghead came to be since most of them are just amusing scripts.
+    Egghead is meant to be a feature-rich brainfuck interpreter that is fully
+    GNU-compliant.
+
+Installation
+============
+
+    See the INSTALL file.
+
+Reporting Bugs
+==============
+
+    Bugs should be reported using GitHub Issues. Simply visit
+    https://github.com/soh-cah-toa/egghead/issues and select "New Issue".
+    You will need to create a GitHub account if you don't already have one.
+
+Author
+======
+
+    Egghead was written by Kevin Polulak <kpolulak@gmail.com>.
+
+License
+=======
+
+    Egghead is released under the terms of the GNU General Public License
+    version 3. Please see the COPYING file for details.
