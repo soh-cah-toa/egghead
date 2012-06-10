@@ -58,7 +58,37 @@ egghead_dbg_init(void)
 void
 egghead_dbg_cmd_help(eh_interp_t *interp, const char *cmd)
 {
-    puts("This is 'help' command");
+    const eh_cmd_t *c = parse_cmd(&cmd);
+
+    if (c)
+        printf("%s\n", c->ec_help);
+    else {
+        if (*cmd == '\0') {
+            const char  *msg;
+            unsigned int i;
+
+            puts("List of commands:\n");
+
+            /* Iterate through global command table. */
+            for (i = 0; i < (sizeof (cmd_tbl) / sizeof (eh_cmd_tbl_t)); i++) {
+                const eh_cmd_tbl_t * const tbl = cmd_tbl + i;
+
+                /* Display name and short message about each command. */
+                printf("   %-12s  %s\n",
+                       tbl->ect_name,
+                       tbl->ect_cmd->ec_short_help);
+            }
+
+            msg =
+                "\nType 'help' followed by command name for more information.\n"
+                "Command name abbreviations are allowed if it's unambiguous.";
+
+            puts(msg);
+        }
+        else {
+            fprintf(stderr, "Undefined command: \"%s\". Try \"help\".\n", cmd);
+        }
+    }
 }
 
 void

@@ -1,4 +1,8 @@
 2012-06-10 Kevin Polulak <kpolulak@gmail.com>
+	* src/debugger.c: Added real implementation of `help` command in
+	egghead_dbg_cmd_help().
+
+2012-06-10 Kevin Polulak <kpolulak@gmail.com>
 	* Makefile: Added -Wnonnull switch to $CC_WARN variable since a few new
 	functions in src/debugger.c use __attribute__((nonnull)).
 
