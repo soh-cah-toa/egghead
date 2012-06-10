@@ -3,3 +3,6 @@
 
 # Ignore temporary build directory
 /bin
+
+# Ignore ctags file
+/tags
