@@ -37,7 +37,7 @@ PROVE    = prove
 CC       = gcc
 CC_INC   = -I./include
 CC_O_OUT = -o
-CC_WARN  = -W -Wall
+CC_WARN  = -W -Wall -Wnonnull
 CFLAGS   = $(CC_INC) -O2 -g -fstack-protector -std=c99
 
 ##

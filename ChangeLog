@@ -1,3 +1,25 @@
+2012-06-10 Kevin Polulak <kpolulak@gmail.com>
+	* Makefile: Added -Wnonnull switch to $CC_WARN variable since a few new
+	functions in src/debugger.c use __attribute__((nonnull)).
+
+	* include/debugger.h: Added eh_interp_t struct for describing info about
+	the interpreter. Modified *eh_cmd_func_t() to take a eh_interp_t* pointer
+	as the first parameter. Also reordered where several struct definitions
+	appear so that everything is declared first before it is referenced.
+
+	* src/debugger.c: Created several new functions including:
+		+ Static
+			* runloop(): Executes main "get-command-run-command" runloop.
+			* get_cmd(): Prompts user to enter command.
+			* run_cmd(): Executes *eh_cmd_func_t() associated with given command.
+			* parse_cmd(): Parses input for valid command and arguments.
+			* skip_whitespace(): Called by parse_cmd() to get next argument.
+		+ Non-static
+			* egghead_dbg_init(): Initializes interpreter and starts runloop.
+
+	* src/main.c: Added support for new --debugger that invokes the debugger
+	by calling egghead_dbg_init().
+
 2012-06-09 Kevin Polulak <kpolulak@gmail.com>
 	* include/debugger.h: New file. Contains structures and definitions needed
 	by the upcoming debugger.

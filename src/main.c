@@ -15,6 +15,7 @@
  */
 
 #include "egghead.h"
+#include "debugger.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -42,15 +43,16 @@ main(int argc, char *argv[])
     /* Process command-line switches. */
     while (1) {
         static struct option long_opts[] = {
-            { "strict",  no_argument, 0, 's' },
-            { "help",    no_argument, 0, 'h' },
-            { "license", no_argument, 0, 'l' },
+            { "strict",   no_argument, 0, 's' },
+            { "debugger", no_argument, 0, 'd' },
+            { "help",     no_argument, 0, 'h' },
+            { "license",  no_argument, 0, 'l' },
             { 0, 0, 0, 0 }
         };
 
         int opt_index = 0;
 
-        c = getopt_long(argc, argv, "shl", long_opts, &opt_index);
+        c = getopt_long(argc, argv, "sdhl", long_opts, &opt_index);
 
         /* Detect end of options. */
         if (c == -1)
@@ -59,6 +61,14 @@ main(int argc, char *argv[])
         switch (c) {
         case 's':
             options->eo_strict = true;
+            break;
+
+        case 'd':
+            egghead_dbg_init();
+
+            XFREE(options);
+            return 0;
+
             break;
 
         case 'l':

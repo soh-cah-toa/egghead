@@ -17,10 +17,27 @@
 #ifndef _DEBUGGER_H_
 #define _DEBUGGER_H_
 
-void eh_cmd_help(const char *);
-void eh_cmd_quit(const char *);
+/* Size of command-line buffer. */
+#define EGGHEAD_CMD_BUF_LEN 128
 
-typedef void (*eh_cmd_func_t)(const char *);
+/* Details about brainfuck file being debugged. */
+typedef struct eh_file {
+    const char *ef_path; /* Name of source file. */
+    const char *ef_src;  /* Source code text. */
+    size_t      ef_size; /* Size of file in bytes. */
+} eh_file_t;
+
+typedef struct eh_interp {
+    eh_file_t *ei_file;     /* File being debugged. */
+    char      *ei_cur_cmd;  /* Current command. */
+    char      *ei_prev_cmd; /* Previous command. */
+} eh_interp_t;
+
+void egghead_dbg_init(void);
+void egghead_dbg_cmd_help(eh_interp_t *, const char *);
+void egghead_dbg_cmd_quit(eh_interp_t *, const char *);
+
+typedef void (*eh_cmd_func_t)(eh_interp_t *, const char *);
 
 /* Represents a particular command. */
 typedef struct eh_cmd {
@@ -35,13 +52,6 @@ typedef struct eh_cmd_tbl {
     const char     *ect_short_name; /* Command abbreviation. */
     const eh_cmd_t *ect_cmd;        /* Implementation and help messages. */
 } eh_cmd_tbl_t;
-
-/* Details about brainfuck file being debugged. */
-typedef struct eh_file {
-    const char *ef_file; /* Name of source file. */
-    const char *ef_src;  /* Source code text. */
-    size_t      ef_size; /* Size of file in bytes. */
-} eh_file_t;
 
 #endif /* _DEBUGGER_H_ */
 
