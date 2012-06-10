@@ -1,4 +1,11 @@
 2012-06-10 Kevin Polulak <kpolulak@gmail.com>
+	* include/egghead.h: Defined UNUSED() macro for declaring a given function
+	parameter as unused to eliminate compiler warnings.
+
+	* src/debugger.c: Added UNUSED(interp) to egghead_dbg_cmd_help() and
+	UNUSED(interp) and UNUSED(cmd) to egghead_dbg_cmd_quit().
+
+2012-06-10 Kevin Polulak <kpolulak@gmail.com>
 	* src/debugger.c: Added real implementation of `help` command in
 	egghead_dbg_cmd_help().
 

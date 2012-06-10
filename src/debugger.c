@@ -58,6 +58,8 @@ egghead_dbg_init(void)
 void
 egghead_dbg_cmd_help(eh_interp_t *interp, const char *cmd)
 {
+    UNUSED(interp);
+
     const eh_cmd_t *c = parse_cmd(&cmd);
 
     if (c)
@@ -94,7 +96,8 @@ egghead_dbg_cmd_help(eh_interp_t *interp, const char *cmd)
 void
 egghead_dbg_cmd_quit(eh_interp_t *interp, const char *cmd)
 {
-    puts("This is 'quit' command");
+    UNUSED(interp);
+    UNUSED(cmd);
     exit(0);
 }
 

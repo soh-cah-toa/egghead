@@ -21,13 +21,22 @@
 #include <string.h>
 #include <stdbool.h>
 
+/* Manages command-line options that affect interpreter. */
 typedef struct eh_opts {
-    bool         eo_strict;
-    unsigned int eo_cells;
+    bool         eo_strict; /* --strict flag */
+    unsigned int eo_cells;  /* --cells value */
 } eh_opts_t;
 
+/* Makes string comparisons more clear. */
 #define STREQ(s1, s2) ((strcmp((s1), (s2)) == 0))
 
+/* Inside a function definition, declares the given parameter as unused. */
+#define UNUSED(expr) \
+    do { \
+        (void) (expr); \
+    } while (0)
+
+/* Wrappers for error-checking memory management functions. */
 #define XCALLOC(type, num) ((type *) xcalloc((num),  sizeof (type)))
 #define XMALLOC(type, num) ((type *) xmalloc((num)))
 #define XFREE(stale) \
