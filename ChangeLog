@@ -1,3 +1,11 @@
+2012-06-09 Kevin Polulak <kpolulak@gmail.com>
+	* include/debugger.h: New file. Contains structures and definitions needed
+	by the upcoming debugger.
+
+	* src/debugger.c: New file. Debugger implementation. Currently contains
+	only a small dispatch table and empty "skeleton" functions for `help` and
+	`quit` commands.
+
 2012-06-06 Kevin Polulak <kpolulak@gmail.com>
 	* Makefile: Added -std=c99 to CFLAGS.
 
