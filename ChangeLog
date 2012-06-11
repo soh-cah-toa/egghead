@@ -1,4 +1,18 @@
 2012-06-10 Kevin Polulak <kpolulak@gmail.com>
+	* include/egghead.h: Implemented state bitmask operations. Defined new
+	eh_state_t enum to represents bit values. Added ei_state of type
+	eh_state_t to manage interpreter state. Also defined EGGHEAD_FLAG_* macros
+	for manipulating bitmask.
+
+	* src/debugger.c: Changed runloop() to continue running while EGGHEAD_EXIT
+	flag is not set. To work properly, egghead_dbg_cmd_quit() has been
+	modified to simply set this flag and return.
+
+	* src/main.c: Added 'exit' label near end of main() so that goto can be
+	used to minimize the number of exit points and, as a side effect, reduce
+	memory leaks when memory for 'options' struct is not deallocated.
+
+2012-06-10 Kevin Polulak <kpolulak@gmail.com>
 	* include/egghead.h: Defined UNUSED() macro for declaring a given function
 	parameter as unused to eliminate compiler warnings.
 

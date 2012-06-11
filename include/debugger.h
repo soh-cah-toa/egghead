@@ -20,6 +20,28 @@
 /* Size of command-line buffer. */
 #define EGGHEAD_CMD_BUF_LEN 128
 
+/* Convenience macros for manipulating the state bitmask. */
+#define EGGHEAD_FLAG_SET(interp, flag) \
+    ((interp)->ei_state = (eh_state_t) ((interp)->ei_state | (flag)))
+
+#define EGGHEAD_FLAG_CLEAR(interp, flag) \
+    ((interp)->ei_state = (eh_state_t) ((interp)->ei_state & ~(flag)))
+
+#define EGGHEAD_FLAG_TEST(interp, flag) \
+    ((interp)->ei_state & (flag))
+
+/* Flags used to alter and identify the current state of the debugger. */
+typedef enum {
+    EGGHEAD_SRC_LOADED   = 0x0001, /* Source code for debugge is loaded. */
+    EGGHEAD_RUNNING      = 0x0002, /* Debugger is running. */
+    EGGHEAD_STOPPED      = 0x0004, /* Debugger is stopped/paused. */
+    EGGHEAD_BREAK        = 0x0008, /* Halt at next breakpoint. */
+    EGGHEAD_STEP         = 0x0010, /* Step execution one instruction. */
+    EGGHEAD_EXIT         = 0x0020, /* Debugger is about to exit. */
+    EGGHEAD_STARTED      = 0x0040, /* Debugger has been started. */
+    EGGHEAD_CMD_ENTERED  = 0x0080  /* At least one command was entered. */
+} eh_state_t;
+
 /* Details about brainfuck file being debugged. */
 typedef struct eh_file {
     const char *ef_path; /* Name of source file. */
@@ -27,7 +49,9 @@ typedef struct eh_file {
     size_t      ef_size; /* Size of file in bytes. */
 } eh_file_t;
 
+/* The debugger's core type. */
 typedef struct eh_interp {
+    eh_state_t ei_state;    /* Status of debugger. */
     eh_file_t *ei_file;     /* File being debugged. */
     char      *ei_cur_cmd;  /* Current command. */
     char      *ei_prev_cmd; /* Previous command. */

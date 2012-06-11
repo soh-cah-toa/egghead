@@ -14,6 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* FIXME: Modify exit()'s in 'switch' statement to use 'goto'. This will
+          minimize the number of exit points and eliminate memory leaks
+          when XFREE(options) doesn't get called. */
+
 #include "egghead.h"
 #include "debugger.h"
 
@@ -65,10 +69,7 @@ main(int argc, char *argv[])
 
         case 'd':
             egghead_dbg_init();
-
-            XFREE(options);
-            return 0;
-
+            goto exit;
             break;
 
         case 'l':
@@ -119,6 +120,7 @@ main(int argc, char *argv[])
         }
     } while (++argind < argc);
 
+  exit:
     XFREE(options);
 
     return 0;

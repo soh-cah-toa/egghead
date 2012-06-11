@@ -96,15 +96,14 @@ egghead_dbg_cmd_help(eh_interp_t *interp, const char *cmd)
 void
 egghead_dbg_cmd_quit(eh_interp_t *interp, const char *cmd)
 {
-    UNUSED(interp);
     UNUSED(cmd);
-    exit(0);
+    EGGHEAD_FLAG_SET(interp, EGGHEAD_EXIT);
 }
 
 static void
 runloop(eh_interp_t *interp)
 {
-    while (1) {
+    do {
         const char *cmd;
 
         get_cmd(interp);
@@ -112,7 +111,7 @@ runloop(eh_interp_t *interp)
         cmd = interp->ei_cur_cmd;
 
         run_cmd(interp, cmd);
-    }
+    } while (!(EGGHEAD_FLAG_TEST(interp, EGGHEAD_EXIT)));
 }
 
 static void
