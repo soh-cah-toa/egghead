@@ -21,6 +21,10 @@
 #include <string.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Manages command-line options that affect interpreter. */
 typedef struct eh_opts {
     bool         eo_strict; /* --strict flag */
@@ -49,6 +53,10 @@ void egghead_eval_file(eh_opts_t *, const char * const);
 
 void *xcalloc(size_t, size_t);
 void *xmalloc(size_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _EGGHEAD_H_ */
 

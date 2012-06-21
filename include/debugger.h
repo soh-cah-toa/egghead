@@ -17,6 +17,10 @@
 #ifndef _DEBUGGER_H_
 #define _DEBUGGER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Size of command-line buffer. */
 #define EGGHEAD_CMD_BUF_LEN 128
 
@@ -81,6 +85,10 @@ typedef struct eh_cmd_tbl {
     const char     *ect_short_name; /* Command abbreviation. */
     const eh_cmd_t *ect_cmd;        /* Implementation and help messages. */
 } eh_cmd_tbl_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _DEBUGGER_H_ */
 
