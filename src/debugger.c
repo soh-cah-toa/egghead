@@ -21,16 +21,27 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-static void            runloop(eh_interp_t *) __attribute__((nonnull));
-static void            get_cmd(eh_interp_t *) __attribute__((nonnull));
-static int             run_cmd(eh_interp_t *, const char *) __attribute__((nonnull));
+static void runloop(eh_interp_t *) __attribute__((nonnull));
+static void load_src(eh_interp_t *, const char * const) __attribute__((nonnull));
+static void free_src(eh_interp_t *);
+static void get_cmd(eh_interp_t *) __attribute__((nonnull));
+static unsigned int check_file_exists(eh_interp_t *) __attribute__((pure, warn_unused_result));
+static unsigned int run_cmd(eh_interp_t *, const char *) __attribute__((nonnull));
 static const eh_cmd_t *parse_cmd(const char **) __attribute__((warn_unused_result));
-static const char     *skip_whitespace(const char *) __attribute__((nonnull, pure, warn_unused_result));
+static const char *skip_whitespace(const char *) __attribute__((nonnull, pure, warn_unused_result));
 
 eh_cmd_t
+    cmd_file = { &egghead_dbg_cmd_file,
+                 "Dynamically load FILE into debugger.",
+                 "Dynamically load FILE into debugger." },
+
     cmd_help = { &egghead_dbg_cmd_help,
                  "Displays a summary help message.",
                  "Displays a summary help message." },
+
+    cmd_list = { &egghead_dbg_cmd_list,
+                 "Displays contents of file being debugged.",
+                 "Displays contents of file being debugged." },
 
     cmd_quit = { &egghead_dbg_cmd_quit,
                  "Exits Egghead debugger.",
@@ -38,21 +49,38 @@ eh_cmd_t
 
 /* Global command table. */
 eh_cmd_tbl_t cmd_tbl[] = {
+    { "file", "f", &cmd_file },
     { "help", "h", &cmd_help },
+    { "list", "l", &cmd_list },
     { "quit", "q", &cmd_quit }
 };
 
 void
-egghead_dbg_init(void)
+egghead_dbg_init(const char * const file)
 {
     eh_interp_t *interp = XMALLOC(eh_interp_t, sizeof (eh_interp_t));
 
     interp->ei_file = XMALLOC(eh_file_t, sizeof (eh_file_t));
 
+    if (!STREQ(file, ""))
+        load_src(interp, file);
+
     runloop(interp);
 
     XFREE(interp->ei_file);
     XFREE(interp);
+}
+
+void
+egghead_dbg_cmd_file(eh_interp_t *interp, const char *cmd)
+{
+    UNUSED(cmd);
+
+    /* Free previous source file (if any). */
+    if (interp->ei_file)
+        free_src(interp);
+
+    load_src(interp, cmd);
 }
 
 void
@@ -94,6 +122,18 @@ egghead_dbg_cmd_help(eh_interp_t *interp, const char *cmd)
 }
 
 void
+egghead_dbg_cmd_list(eh_interp_t *interp, const char *cmd)
+{
+    UNUSED(cmd);
+
+    if (!check_file_exists(interp))
+        fprintf(stderr, "No file has been loaded. Use the 'file' command.\n");
+    else {
+        printf("%s\n", interp->ei_file->ef_src);
+    }
+}
+
+void
 egghead_dbg_cmd_quit(eh_interp_t *interp, const char *cmd)
 {
     UNUSED(cmd);
@@ -112,6 +152,76 @@ runloop(eh_interp_t *interp)
 
         run_cmd(interp, cmd);
     } while (!(EGGHEAD_FLAG_TEST(interp, EGGHEAD_EXIT)));
+}
+
+static void
+load_src(eh_interp_t *interp, const char * const file)
+{
+    int    ch;
+    size_t buf_size;
+    FILE  *fd;
+
+    eh_file_t *dbg_file;
+
+    fd = fopen(file, "r");
+
+    if (!fd) {
+        fprintf(stderr, "%s: No such file or directory.\n", file);
+        return;
+    }
+
+    dbg_file          = XCALLOC(eh_file_t, 1);
+    dbg_file->ef_src  = XMALLOC(char, EGGHEAD_SRC_BUF_LEN);
+    dbg_file->ef_path = XMALLOC(char, sizeof (file));
+    buf_size          = EGGHEAD_SRC_BUF_LEN;
+
+    dbg_file->ef_path = (char *) file;
+
+    do {
+        /* Iterate through characters until newline is reached. */
+        do {
+            ch = fgetc(fd);
+
+            if (ch == EOF)
+                break;
+
+            dbg_file->ef_src[dbg_file->ef_size] = (char) ch;
+
+            /* Extend buffer size if it's full. */
+            if (++dbg_file->ef_size >= buf_size) {
+                buf_size         += EGGHEAD_SRC_BUF_LEN;
+                dbg_file->ef_src  = realloc(dbg_file->ef_src, buf_size);
+            }
+        } while (ch != '\n');
+
+        /* Stop if the file is empty. */
+        if ((ch == EOF) &&
+            ((dbg_file->ef_size == 0)
+                || (dbg_file->ef_src[dbg_file->ef_size - 1] == '\n'))) {
+
+            break;
+        }
+
+        if (ch == EOF)
+            dbg_file->ef_src[dbg_file->ef_size++] = '\n';
+    } while (ch != EOF);
+
+    fclose(fd);
+
+    interp->ei_file = dbg_file;
+
+    EGGHEAD_FLAG_SET(interp, EGGHEAD_SRC_LOADED);
+}
+
+static void
+free_src(eh_interp_t *interp)
+{
+    XFREE(interp->ei_file->ef_src);
+    XFREE(interp->ei_file->ef_path);
+
+    interp->ei_file->ef_size = 0;
+
+    XFREE(interp->ei_file);
 }
 
 static void
@@ -140,7 +250,16 @@ get_cmd(eh_interp_t *interp)
     }
 }
 
-static int
+static unsigned int
+check_file_exists(eh_interp_t * interp)
+{
+    if (interp->ei_file && interp->ei_file->ef_size)
+        return 1;
+    else
+        return 0;
+}
+
+static unsigned int
 run_cmd(eh_interp_t *interp, const char *cmd)
 {
     const eh_cmd_t *c;

@@ -20,6 +20,9 @@
 /* Size of command-line buffer. */
 #define EGGHEAD_CMD_BUF_LEN 128
 
+/* Size of buffer allocated for source code. */
+#define EGGHEAD_SRC_BUF_LEN 1024
+
 /* Convenience macros for manipulating the state bitmask. */
 #define EGGHEAD_FLAG_SET(interp, flag) \
     ((interp)->ei_state = (eh_state_t) ((interp)->ei_state | (flag)))
@@ -44,8 +47,8 @@ typedef enum {
 
 /* Details about brainfuck file being debugged. */
 typedef struct eh_file {
-    const char *ef_path; /* Name of source file. */
-    const char *ef_src;  /* Source code text. */
+    char       *ef_path; /* Name of source file. */
+    char       *ef_src;  /* Source code text. */
     size_t      ef_size; /* Size of file in bytes. */
 } eh_file_t;
 
@@ -57,8 +60,10 @@ typedef struct eh_interp {
     char      *ei_prev_cmd; /* Previous command. */
 } eh_interp_t;
 
-void egghead_dbg_init(void);
+void egghead_dbg_init(const char * const);
+void egghead_dbg_cmd_file(eh_interp_t *, const char *);
 void egghead_dbg_cmd_help(eh_interp_t *, const char *);
+void egghead_dbg_cmd_list(eh_interp_t *, const char *);
 void egghead_dbg_cmd_quit(eh_interp_t *, const char *);
 
 typedef void (*eh_cmd_func_t)(eh_interp_t *, const char *);

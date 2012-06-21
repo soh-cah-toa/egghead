@@ -68,7 +68,12 @@ main(int argc, char *argv[])
             break;
 
         case 'd':
-            egghead_dbg_init();
+            /* Get input source as last remaining argument. */
+            if (optind < argc)
+                infile = argv[optind];
+
+            egghead_dbg_init(infile);
+
             goto exit;
             break;
 
@@ -92,17 +97,15 @@ main(int argc, char *argv[])
 
     do {
         infile = "-";
-        argind   = optind;
+        argind = optind;
 
         /* Get input source as last remaining argument. */
-        if (optind < argc) {
-            infile = argv[optind];
-        }
+        if (argind < argc)
+            infile = argv[argind];
 
         /* Determine whether input source is stdin or an actual file. */
-        if ((infile[0] == '-') && (infile[1] == 0)) {
+        if ((infile[0] == '-') && (infile[1] == 0))
             egghead_eval_file(options, "-");
-        }
         else {
             /* Proceed only if a valid .bf or .b file was given. */
             if ((STREQ(strrchr(infile, '.'), ".bf"))
