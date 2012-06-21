@@ -83,7 +83,7 @@ egghead_dbg_init(const char * const file)
 
     runloop(interp);
 
-    XFREE(interp->ei_file);
+    free_src(interp);
     XFREE(interp);
 }
 
