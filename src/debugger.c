@@ -22,14 +22,29 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-static void runloop(eh_interp_t *) __attribute__((nonnull));
-static void load_src(eh_interp_t *, const char * const) __attribute__((nonnull));
-static void free_src(eh_interp_t *);
-static void get_cmd(eh_interp_t *) __attribute__((nonnull));
-static unsigned int check_file_exists(eh_interp_t *) __attribute__((pure, warn_unused_result));
-static unsigned int run_cmd(eh_interp_t *, const char *) __attribute__((nonnull));
-static const eh_cmd_t *parse_cmd(const char **) __attribute__((warn_unused_result));
-static const char *skip_whitespace(const char *) __attribute__((nonnull, pure, warn_unused_result));
+static void runloop(eh_interp_t *)
+    __attribute__((nonnull));
+
+static void load_src(eh_interp_t *, const char * const)
+    __attribute__((nonnull));
+
+static void free_src(eh_interp_t *)
+    __attribute__((nonnull));
+
+static void get_cmd(eh_interp_t *)
+    __attribute__((nonnull));
+
+static unsigned int check_file_exists(eh_interp_t *)
+    __attribute__((pure, warn_unused_result));
+
+static unsigned int run_cmd(eh_interp_t *, const char *)
+    __attribute__((nonnull));
+
+static const eh_cmd_t *parse_cmd(const char **)
+    __attribute__((warn_unused_result));
+
+static const char *skip_whitespace(const char *)
+    __attribute__((nonnull, pure, warn_unused_result));
 
 eh_cmd_t
     cmd_file = { &egghead_dbg_cmd_file,
