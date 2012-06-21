@@ -37,8 +37,8 @@ PROVE    = prove
 CC       = gcc
 CC_INC   = -I./include
 CC_O_OUT = -o
-CC_WARN  = -W -Wall -Wnonnull
-CFLAGS   = $(CC_INC) -O2 -g -fstack-protector -std=c99
+CC_WARN  = -W -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Winline -Winvalid-pch -Wlogical-op -Wmissing-include-dirs -Wmultichar -Wpacked -Wpointer-arith -Wswitch-default -Wundef -Wwrite-strings -Wformat=2 -fstack-protector -maccumulate-outgoing-args
+CFLAGS   = $(CC_INC) -O2 -g -std=c99
 
 ##
 # USER TARGETS

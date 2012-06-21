@@ -34,11 +34,10 @@ static void usage(unsigned int);
 int
 main(int argc, char *argv[])
 {
-    int   c;
-    int   argind;
-    char *infile = "";
-
-    eh_opts_t *options = XMALLOC(eh_opts_t, sizeof (eh_opts_t));
+    int         c;
+    int         argind;
+    const char *infile  = "";
+    eh_opts_t  *options = XMALLOC(eh_opts_t, sizeof (eh_opts_t));
 
     default_options(options);
 

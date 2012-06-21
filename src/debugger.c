@@ -18,6 +18,7 @@
 #include "debugger.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 
@@ -74,8 +75,6 @@ egghead_dbg_init(const char * const file)
 void
 egghead_dbg_cmd_file(eh_interp_t *interp, const char *cmd)
 {
-    UNUSED(cmd);
-
     /* Free previous source file (if any). */
     if (interp->ei_file)
         free_src(interp);
@@ -172,10 +171,10 @@ load_src(eh_interp_t *interp, const char * const file)
 
     dbg_file          = XCALLOC(eh_file_t, 1);
     dbg_file->ef_src  = XMALLOC(char, EGGHEAD_SRC_BUF_LEN);
-    dbg_file->ef_path = XMALLOC(char, sizeof (file));
+    dbg_file->ef_path = XMALLOC(char, strlen(file) + 1);
     buf_size          = EGGHEAD_SRC_BUF_LEN;
 
-    dbg_file->ef_path = (char *) file;
+    strcpy(dbg_file->ef_path, file);
 
     do {
         /* Iterate through characters until newline is reached. */
